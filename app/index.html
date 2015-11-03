@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <title>Starburst</title>
+    <style>
+     .container {
+       width: 800;
+       text-align: center;
+     }
+     .row {
+       margin: 40px;
+     }
+
+     .row h1 {
+       font-family: "Courier New", "sans-serif";
+     }
+
+     #game-area canvas {
+       margin: 0 auto;
+     }
+    </style>
+  </head>
+  <body>
+<!--     <div class="container">
+      <div class="row">
+        <h1>'Allo, 'Allo! </h1>
+      </div>
+      <div class="row">
+        <div id="game-area">
+        </div>
+      </div>
+    </div> -->
+
+    <script src="bower_components/requirejs/require.js"></script>
+    <script>
+     require(['scripts/common'], function() {
+       require(['main']);
+     });
+    </script>
+    
+  </body>
+</html>
