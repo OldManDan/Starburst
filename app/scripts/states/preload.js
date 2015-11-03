@@ -14,6 +14,8 @@ define(['phaser', 'app/config'], function(Phaser, Config) {
             this.game.load.image('background', paths.sprites + 'background.png');
             this.game.load.spritesheet('player', paths.sprites + 'PlayerShip.png', 71, 92);
             this.game.load.spritesheet('blueEnemy', paths.sprites + 'BlueGem.png', 57, 69);
+            this.game.load.spritesheet('yellowEnemy', paths.sprites + 'YellowGem.png', 57, 69);
+            this.game.load.spritesheet('yellowEnemyExplosion', paths.sprites + 'YellowGem_Explode.png', 57, 69);
             // Loading the atlas for projectiles
             this.game.load.spritesheet('ProjectileAtlas', paths.sprites + 'Projectile_Atlas.png', 32, 32)
 
