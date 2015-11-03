@@ -19,6 +19,10 @@ define(['phaser', 'app/config'], function(Phaser, Config) {
             // Loading the atlas for projectiles
             this.game.load.spritesheet('ProjectileAtlas', paths.sprites + 'Projectile_Atlas.png', 32, 32)
 
+            this.game.load.audio('sfx_bgm', paths.audio + 'sfx_BGM.ogg');
+            this.game.load.audio('sfx_playerShoot', paths.audio + 'sfx_PlayerShoot.ogg');
+            this.game.load.audio('sfx_crystalDeath', paths.audio + 'sfx_EnemyExplosion.ogg')
+
             //var paths = Config.options.paths;
         },
 

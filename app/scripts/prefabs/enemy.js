@@ -1,7 +1,7 @@
 'use strict';
 
 define(['phaser'], function(Phaser) {
-    function Enemy(game, x, y) {
+    function Enemy(game, x, y, type) {
         Phaser.Sprite.call(this, game, x, y, 'blueEnemy', 0);
 
         this.game = game;
@@ -20,18 +20,24 @@ define(['phaser'], function(Phaser) {
         this.enemyExplosion = game.add.sprite(-100, -100, 'yellowEnemyExplosion');
         this.enemyExplosion.anchor.setTo(0.0, 0.0);
         this.enemyExplosion.animations.add('explosion');
+        this.sfx_death = this.game.add.audio('sfx_crystalDeath', 1, false);
 
-        this.health = 4;
-        this.isActive = false;
         this.fireRate = 500;
         this.shotTimer = 0;
         this.enemyShotTimer = 4;
+        this.bulletSpeed = 300;
+
+        this.health = 5;        
         this.alive = true;
+        this.isActive = false;
+        this.activate = false;
+
+        this.shoot = this.Init(this, type);
 
         this.bullets = game.add.group();
         this.bullets.enableBody = true;
         this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
-        this.bullets.createMultiple(30, 'ProjectileAtlas', 12, false);
+        this.bullets.createMultiple(30, 'ProjectileAtlas', 8, false);
         this.bullets.setAll('anchor.x', 0.5);
         this.bullets.setAll('anchor.y', 0.5);
         this.bullets.setAll('outOfBoundsKill', true);
@@ -45,7 +51,8 @@ define(['phaser'], function(Phaser) {
     {
         if(!this.isActive && this.alive)
         {
-            MoveToDestination(this);
+            if(this.activate)
+                MoveToDestination(this);
         }
         else if(this.isActive && this.alive)
         {
@@ -55,7 +62,8 @@ define(['phaser'], function(Phaser) {
             }
 
             // SingleShotFire(this);
-            RadialBurst(this);
+            // RadialBurst(this);
+            this.shoot(this);
         }
     }
 
@@ -79,7 +87,7 @@ define(['phaser'], function(Phaser) {
 
                         var bullet = enemy.bullets.getFirstExists(false);
                         bullet.reset(enemy.enemySprite.x + 30, enemy.enemySprite.y + 50);
-                        enemy.game.physics.arcade.velocityFromAngle(i * 45, 400, bullet.body.velocity);
+                        enemy.game.physics.arcade.velocityFromAngle(i * 45, enemy.bulletSpeed, bullet.body.velocity);
                         // bullet.body.velocity.x = deltaX * 400;
                         // bullet.body.velocity.y = deltaY * 400;
                         ++i;
@@ -102,7 +110,7 @@ define(['phaser'], function(Phaser) {
             {
                 //  And fire it
                 bullet.reset(enemy.enemySprite.x + 30, enemy.enemySprite.y + 50);
-                bullet.body.velocity.y = 400;
+                bullet.body.velocity.y = enemy.bulletSpeed;
                 enemy.shotTimer = enemy.game.time.now + enemy.fireRate;
             }
         }
@@ -117,8 +125,9 @@ define(['phaser'], function(Phaser) {
     {
         console.log(enemy.health);
         enemy.health -= 1;
-        if(enemy.health <= -3)
+        if(enemy.health <= 0)
         {
+            enemy.sfx_death.play();
             enemy.enemySprite.kill();
             enemy.alive = false;
             enemy.enemyExplosion.reset(enemy.x, enemy.y);
@@ -137,6 +146,24 @@ define(['phaser'], function(Phaser) {
             enemy.isActive = true;
         }
     }
+
+    // function Init ( enemy, type )
+    Enemy.prototype.Init = function( enemy, type )
+    {
+        switch (type)
+        {
+            case 0:
+            {
+                return SingleShotFire.bind(enemy); 
+            }
+            case 1:
+            {
+                return RadialBurst.bind(enemy);
+            }
+        }
+    }
+
+
 
     return Enemy;
 });
